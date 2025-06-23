@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/rankings.js') }}"></script>
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ranking.css') }}">
+{% endblock %}
+
+{% block content %}
+   
+    <h2 id="mess1">Subject Rankings</h2>
+    <br>
+    <p id="votes">Based on {{ totalVotes }} votes</p>
+    <div class="ranking">
+      {% for sub in subjects %}
+        <p>
+          {{ sub.name }} 
+        </p>
+        <p>
+          {{ "%.2f"|format(sub.rating) }}
+        </p>
+      {% endfor %}
+    </div>
+    <a href="{{ url_for('main.index') }}">
+      <button>Back to Vote</button>
+    </a>
+    <form id="feedback-form">
+  <label for="feedback">Your feedback:</label><br>
+  <textarea name="feedback" id="feedback" rows="3" required></textarea><br>
+  <button type="submit">Submit Feedback</button>
+  <p id="feedback-msg"></p>
+</form>
+<div class="social-links">
+  <a href="https://github.com/harshal-newaskar64" target="_blank">
+    <img src="{{ url_for('static',filename='icons/github.png') }}" alt="GitHub">
+  </a>
+  <a href="https://www.linkedin.com/in/harshal-newaskar-452076335/" target="_blank">
+    <img src="{{ url_for('static',filename='icons/linkedin.png') }}" alt="LinkedIn">
+  </a>
+</div>
+{% endblock %}
