@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <h2>All Feedbacks</h2>
+  {% for fb in feedbacks %}
+    <div>
+      <h4>{{ fb.name }}</h4>
+      <p>{{ fb.content }}</p>
+      <hr>
+    </div>
+  {% endfor %}
+{% endblock %}

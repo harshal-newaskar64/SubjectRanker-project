@@ -16,11 +16,8 @@ class Match(db.Model):
     
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100))
-    text = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    name = db.Column(db.String(100))    
+    content = db.Column(db.Text)        
 
     def __repr__(self):
-        # show the first 20 chars of text for brevity
-        snippet = (self.text[:20] + '…') if len(self.text) > 20 else self.text
-        return f"<Feedback {self.id} by {self.username}: \"{snippet}\">"
+        return f'<Feedback {self.name}>'

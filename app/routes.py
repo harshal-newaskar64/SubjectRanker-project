@@ -48,18 +48,20 @@ def vote():
 
 @main_bp.route("/feedback", methods=["POST"])
 def feedback():
-    data = request.get_json(silent=True)
-    if not data or 'feedback' not in data:
-        return jsonify({"error": "Missing 'feedback' field"}), 400
-    text = data['feedback'].strip()
-    if not text:
-        return jsonify({"error": "Feedback cannot be empty"}), 400
-    fb = Feedback(username=session.get('username','Anonymous'), text = text)
+    name = request.form['name']
+    content = request.form['feedback']
+
+    fb = Feedback(name=name, content=content)
     db.session.add(fb)
     db.session.commit()
+    
+    return redirect(url_for('main.rankings')) 
 
+@main_bp.route('/view-feedback')
+def view_feedback():
+    feedbacks = Feedback.query.all()
+    return render_template('view_feedback.html', feedbacks=feedbacks)
 
-    return ('', 204)
 
 @main_bp.route("/login", methods=["GET", "POST"])
 def login():
