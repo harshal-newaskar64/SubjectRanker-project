@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, session, flash, url_for, redirect
 import random
-from .models import Subject, Match
+from .models import Subject, Match, Feedback
 from .elo import eloUpdate
 from . import db
 from app.forms import LoginForm
@@ -48,15 +48,16 @@ def vote():
 
 @main_bp.route("/feedback", methods=["POST"])
 def feedback():
-    data = request.get_json()
-    name = session.get('username','Anonymous')
-    text = data.get('feedback','').strip()
+    data = request.get_json(silent=True)
+    if not data or 'feedback' not in data:
+        return jsonify({"error": "Missing 'feedback' field"}), 400
+    text = data['feedback'].strip()
     if not text:
-        return ("No feedback provided", 400)
+        return jsonify({"error": "Feedback cannot be empty"}), 400
+    fb = Feedback(username=session.get('username','Anonymous'), text = text)
+    db.session.add(fb)
+    db.session.commit()
 
-    entry = f"[{datetime.utcnow().isoformat()}] {name}: {text}\n"
-    with open(os.path.join(os.getcwd(), "feedbacks.txt"), "a") as f:
-        f.write(entry)
 
     return ('', 204)
 
