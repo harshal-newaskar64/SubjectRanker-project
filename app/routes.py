@@ -46,16 +46,24 @@ def vote():
       "loser":  {"id": loser.id,  "rating": loser.rating}
     })
 
-@main_bp.route("/feedback", methods=["POST"])
+@main_bp.route('/feedback', methods=['POST'])
 def feedback():
-    name = request.form['name']
-    content = request.form['feedback']
+    try:
+        name = session.get('username')  
+        content = request.form['feedback']
 
-    fb = Feedback(name=name, content=content)
-    db.session.add(fb)
-    db.session.commit()
-    
-    return redirect(url_for('main.rankings')) 
+        if not name or not content:
+            raise ValueError("Missing username or feedback")
+
+        fb = Feedback(name=name, content=content)
+        db.session.add(fb)
+        db.session.commit()
+        flash("Thanks for your feedback","success")
+        return redirect(url_for('main.rankings'))
+
+    except Exception as e:
+        print(f"⚠️ Feedback error: {e}")
+        return "Error, please try again!", 500 
 
 @main_bp.route('/view-feedback')
 def view_feedback():

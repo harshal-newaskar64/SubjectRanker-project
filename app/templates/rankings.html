@@ -9,29 +9,39 @@
 {% endblock %}
 
 {% block content %}
-   
-    <h2 id="mess1">Subject Rankings</h2>
-    <br>
-    <p id="votes">Based on {{ totalVotes }} votes</p>
-    <div class="ranking">
-      {% for sub in subjects %}
-        <p>
-          {{ sub.name }} 
-        </p>
-        <p>
-          {{ "%.2f"|format(sub.rating) }}
-        </p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
       {% endfor %}
     </div>
-    <a href="{{ url_for('main.index') }}">
-      <button>Back to Vote</button>
-    </a>
-    <form id="feedback-form">
-  <label for="feedback">Your feedback:</label><br>
-  <textarea name="feedback" id="feedback" rows="3" required></textarea><br>
+  {% endif %}
+{% endwith %}
+
+<h2 id="mess1">Subject Rankings</h2>
+<br>
+<p id="votes">Based on {{ totalVotes }} votes</p>
+<div class="ranking">
+  {% for sub in subjects %}
+  <p>
+    {{ sub.name }}
+  </p>
+  <p>
+    {{ "%.2f"|format(sub.rating) }}
+  </p>
+  {% endfor %}
+</div>
+<a href="{{ url_for('main.index') }}">
+  <button>Back to Vote</button>
+</a>
+
+<form method="POST" action="{{ url_for('main.feedback') }}">
+  <textarea name="feedback" placeholder="Your Feedback" required></textarea>
   <button type="submit">Submit Feedback</button>
-  <p id="feedback-msg"></p>
 </form>
+
 <div class="social-links">
   <a href="https://github.com/harshal-newaskar64" target="_blank">
     <img src="{{ url_for('static',filename='icons/github.png') }}" alt="GitHub">
